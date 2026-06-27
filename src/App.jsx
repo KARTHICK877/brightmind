@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
 import { useLayoutEffect } from "react";
 import Layout from "./components/Layout";
+import CrazyAnimations from "./components/CrazyAnimations";
 import Home from "./pages/Home";
 import About from "./pages/About";
 import Programs from "./pages/Programs";
@@ -8,28 +9,20 @@ import Gallery from "./pages/Gallery";
 import Events from "./pages/Events";
 import Admission from "./pages/Admission";
 import ChildGuidance from "./pages/ChildGuidance";
-//22
+
 function ScrollTop() {
   const { pathname, hash } = useLocation();
-
   useLayoutEffect(() => {
-    if (hash) {
-      document.getElementById(hash.slice(1))?.scrollIntoView();
-      return;
-    }
-    // kill smooth-scroll so it jumps instantly, not glides
+    if (hash) return; // let in-page anchors (#event) scroll normally
+    // Jump to the very top INSTANTLY — bypass CSS smooth-scroll so the new
+    // page doesn't glide up from where you were. The page-drop animation
+    // then plays the entrance cleanly from the top.
     const html = document.documentElement;
     const prev = html.style.scrollBehavior;
     html.style.scrollBehavior = "auto";
-
-    // reset every place the scroll could actually be
     window.scrollTo(0, 0);
-    html.scrollTop = 0;
-    document.body.scrollTop = 0;
-
     html.style.scrollBehavior = prev;
   }, [pathname, hash]);
-
   return null;
 }
 
@@ -37,6 +30,7 @@ export default function App() {
   return (
     <BrowserRouter>
       <ScrollTop />
+      <CrazyAnimations />
       <Layout>
         <Routes>
           <Route path="/" element={<Home />} />
